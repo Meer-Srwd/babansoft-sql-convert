@@ -31,23 +31,23 @@ const viewPaths = {
 
 const seoPages = {
   home: {
-    title: 'PostgreSQL to SQL Server Converter | BabanSoft SQL Convert',
+    title: 'SQL Converter and Migration Tool | BabanSoft SQL Convert',
     description:
-      'Convert PostgreSQL SQL to SQL Server with BabanSoft SQL Convert, a browser-based SQL migration tool that fixes schema rewrites, batched inserts, arrays, timestamps, and SQL Server compatibility issues.',
+      'BabanSoft SQL Convert is a SQL converter and migration platform for database teams. PostgreSQL to SQL Server is available now while broader SQL conversion routes are being prepared.',
     path: '/',
     robots: 'index, follow'
   },
   converter: {
-    title: 'Online PostgreSQL to SQL Server Converter | BabanSoft SQL Convert',
+    title: 'Online SQL Converter | BabanSoft SQL Convert',
     description:
-      'Paste PostgreSQL SQL, convert it for SQL Server, and prepare migration-ready output with support for schema cleanup, insert batching, and SQL Server-safe syntax.',
+      'Use BabanSoft SQL Convert as a browser-based SQL converter and migration tool. The live route currently converts PostgreSQL SQL to SQL Server while broader SQL paths are being prepared.',
     path: '/converter',
     robots: 'index, follow'
   },
   contact: {
-    title: 'SQL Migration Support and Feedback | BabanSoft SQL Convert',
+    title: 'SQL Conversion Support and Feedback | BabanSoft SQL Convert',
     description:
-      'Contact BabanSoft for SQL migration support, product feedback, bug reports, and PostgreSQL to SQL Server conversion help during beta.',
+      'Contact BabanSoft for SQL conversion support, migration questions, product feedback, and beta issue reports while the broader platform is being expanded.',
     path: '/contact',
     robots: 'index, follow'
   },
@@ -1748,7 +1748,7 @@ export default function App() {
           <div className="header-tools">
             <div className="header-badge">
               <span>{t('headerAvailableNow')}</span>
-              <strong>PostgreSQL to SQL Server</strong>
+              <strong>SQL conversion platform</strong>
             </div>
 
             <button className="header-login" type="button" onClick={() => navigateTo('account')}>
