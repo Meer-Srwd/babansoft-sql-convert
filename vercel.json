@@ -1,0 +1,52 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "installCommand": "npm --prefix backend install && npm --prefix frontend install",
+  "buildCommand": "npm --prefix frontend run build",
+  "outputDirectory": "frontend/dist",
+  "rewrites": [
+    {
+      "source": "/health",
+      "destination": "/api/health"
+    },
+    {
+      "source": "/api/auth/register",
+      "destination": "/api/auth?route=register"
+    },
+    {
+      "source": "/api/auth/login",
+      "destination": "/api/auth?route=login"
+    },
+    {
+      "source": "/api/auth/refresh",
+      "destination": "/api/auth?route=refresh"
+    },
+    {
+      "source": "/api/auth/forgot-password",
+      "destination": "/api/auth?route=forgot-password"
+    },
+    {
+      "source": "/api/auth/resend-confirmation",
+      "destination": "/api/auth?route=resend-confirmation"
+    },
+    {
+      "source": "/api/auth/reset-password",
+      "destination": "/api/auth?route=reset-password"
+    },
+    {
+      "source": "/api/auth/logout",
+      "destination": "/api/auth?route=logout"
+    },
+    {
+      "source": "/api/account/me",
+      "destination": "/api/account?route=me"
+    },
+    {
+      "source": "/api/account/profile",
+      "destination": "/api/account?route=profile"
+    },
+    {
+      "source": "/api/account/settings",
+      "destination": "/api/account?route=settings"
+    }
+  ]
+}
