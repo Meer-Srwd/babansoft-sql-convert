@@ -138,7 +138,7 @@ button {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 14px;
+  gap: 12px;
   color: var(--text);
   text-align: left;
 }
@@ -155,8 +155,8 @@ button {
 }
 
 .brand-logo-frame {
-  width: 236px;
-  height: 78px;
+  width: 148px;
+  height: 60px;
   padding: 0;
   border: 1px solid rgba(11, 99, 219, 0.16);
 }
@@ -165,9 +165,9 @@ button {
 .footer-logo {
   width: 100%;
   height: 100%;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  transform: scale(1.02);
+  transform: translateY(6px) scale(2.45);
   transform-origin: center;
   display: block;
 }
@@ -1153,8 +1153,8 @@ button {
 
 .footer-logo-frame {
   flex-shrink: 0;
-  width: 232px;
-  height: 84px;
+  width: 184px;
+  height: 72px;
   padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.18);
 }
@@ -1268,13 +1268,13 @@ button {
   }
 
   .brand-logo-frame {
-    width: 188px;
-    height: 62px;
+    width: 132px;
+    height: 54px;
   }
 
   .footer-logo-frame {
-    width: 206px;
-    height: 72px;
+    width: 164px;
+    height: 64px;
   }
 
   .brand-lockup {
@@ -1287,11 +1287,11 @@ button {
   }
 
   .brand-logo-frame {
-    width: 172px;
+    width: 86px;
   }
 
   .footer-logo-frame {
-    width: min(100%, 198px);
+    width: min(100%, 120px);
   }
 
   .hero-card,

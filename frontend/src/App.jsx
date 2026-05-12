@@ -19,7 +19,7 @@ import { sampleQueries } from './data/sampleQueries.js';
 
 const FROM_DB = 'postgresql';
 const TO_DB = 'sqlserver';
-const BRAND_LOGO = '/BabanSoft_L.png';
+const BRAND_LOGO = '/BabanSoft_Logo.jpeg';
 
 const authSessionStorageKey = 'babanSoftAuthSession';
 const uiPreferencesStorageKey = 'babanSoftUiPreferences';
@@ -1562,6 +1562,10 @@ export default function App() {
           <button className="brand-lockup brand-button" type="button" onClick={() => navigateTo('home')}>
             <span className="brand-logo-frame">
               <img className="brand-logo" src={BRAND_LOGO} alt="BabanSoft logo" />
+            </span>
+            <span className="brand-copy">
+              <strong className="brand-title">BabanSoft</strong>
+              <span className="brand-subtitle">SQL Convert</span>
             </span>
             <span className="brand-beta-tag">BETA</span>
           </button>
