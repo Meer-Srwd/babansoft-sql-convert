@@ -20,6 +20,44 @@ import { sampleQueries } from './data/sampleQueries.js';
 const FROM_DB = 'postgresql';
 const TO_DB = 'sqlserver';
 const BRAND_LOGO = '/BabanSoft_Logo.jpeg';
+const SITE_URL = 'https://sqlconvert.babansoft.com';
+
+const viewPaths = {
+  home: '/',
+  converter: '/converter',
+  contact: '/contact',
+  account: '/account'
+};
+
+const seoPages = {
+  home: {
+    title: 'PostgreSQL to SQL Server Converter | BabanSoft SQL Convert',
+    description:
+      'Convert PostgreSQL SQL to SQL Server with BabanSoft SQL Convert, a browser-based SQL migration tool that fixes schema rewrites, batched inserts, arrays, timestamps, and SQL Server compatibility issues.',
+    path: '/',
+    robots: 'index, follow'
+  },
+  converter: {
+    title: 'Online PostgreSQL to SQL Server Converter | BabanSoft SQL Convert',
+    description:
+      'Paste PostgreSQL SQL, convert it for SQL Server, and prepare migration-ready output with support for schema cleanup, insert batching, and SQL Server-safe syntax.',
+    path: '/converter',
+    robots: 'index, follow'
+  },
+  contact: {
+    title: 'SQL Migration Support and Feedback | BabanSoft SQL Convert',
+    description:
+      'Contact BabanSoft for SQL migration support, product feedback, bug reports, and PostgreSQL to SQL Server conversion help during beta.',
+    path: '/contact',
+    robots: 'index, follow'
+  },
+  account: {
+    title: 'Account | BabanSoft SQL Convert',
+    description: 'Sign in to manage your BabanSoft SQL Convert account, profile, and saved interface preferences.',
+    path: '/account',
+    robots: 'noindex, nofollow'
+  }
+};
 
 const authSessionStorageKey = 'babanSoftAuthSession';
 const uiPreferencesStorageKey = 'babanSoftUiPreferences';
@@ -176,8 +214,73 @@ function formatDate(dateValue, languageCode) {
   }
 }
 
+function normalizeAppPathname(pathname = '/') {
+  if (!pathname || pathname === '/') {
+    return '/';
+  }
+
+  return pathname.replace(/\/+$/, '') || '/';
+}
+
+function getViewFromPath(pathname) {
+  switch (normalizeAppPathname(pathname)) {
+    case '/converter':
+      return 'converter';
+    case '/contact':
+      return 'contact';
+    case '/account':
+      return 'account';
+    default:
+      return 'home';
+  }
+}
+
+function getPathForView(viewId) {
+  return viewPaths[viewId] ?? viewPaths.home;
+}
+
+function readInitialView() {
+  if (typeof window === 'undefined') {
+    return 'home';
+  }
+
+  return getViewFromPath(window.location.pathname);
+}
+
+function upsertMetaTag(attribute, key, content) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  let metaTag = document.head.querySelector(`meta[${attribute}="${key}"]`);
+
+  if (!metaTag) {
+    metaTag = document.createElement('meta');
+    metaTag.setAttribute(attribute, key);
+    document.head.appendChild(metaTag);
+  }
+
+  metaTag.setAttribute('content', content);
+}
+
+function upsertCanonicalLink(href) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  let canonicalLink = document.head.querySelector('link[rel="canonical"]');
+
+  if (!canonicalLink) {
+    canonicalLink = document.createElement('link');
+    canonicalLink.setAttribute('rel', 'canonical');
+    document.head.appendChild(canonicalLink);
+  }
+
+  canonicalLink.setAttribute('href', href);
+}
+
 export default function App() {
-  const [activeView, setActiveView] = useState('home');
+  const [activeView, setActiveView] = useState(readInitialView);
   const [query, setQuery] = useState('');
   const [targetDatabaseName, setTargetDatabaseName] = useState('');
   const [convertedQuery, setConvertedQuery] = useState('');
@@ -444,6 +547,53 @@ export default function App() {
   }, [currentLanguage, currentTheme]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const currentPath = normalizeAppPathname(window.location.pathname);
+
+    if (getViewFromPath(currentPath) === 'home' && currentPath !== viewPaths.home) {
+      window.history.replaceState({}, document.title, viewPaths.home);
+    }
+
+    function handlePopState() {
+      setActiveView(getViewFromPath(window.location.pathname));
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (typeof document === 'undefined') {
+      return;
+    }
+
+    const pageSeo = seoPages[activeView] ?? seoPages.home;
+    const canonicalUrl = `${SITE_URL}${pageSeo.path === '/' ? '/' : pageSeo.path}`;
+
+    document.title = pageSeo.title;
+    upsertMetaTag('name', 'description', pageSeo.description);
+    upsertMetaTag('name', 'robots', pageSeo.robots);
+    upsertMetaTag('property', 'og:type', 'website');
+    upsertMetaTag('property', 'og:site_name', 'BabanSoft SQL Convert');
+    upsertMetaTag('property', 'og:title', pageSeo.title);
+    upsertMetaTag('property', 'og:description', pageSeo.description);
+    upsertMetaTag('property', 'og:url', canonicalUrl);
+    upsertMetaTag('property', 'og:image', `${SITE_URL}/BabanSoft_L.png`);
+    upsertMetaTag('name', 'twitter:card', 'summary_large_image');
+    upsertMetaTag('name', 'twitter:title', pageSeo.title);
+    upsertMetaTag('name', 'twitter:description', pageSeo.description);
+    upsertMetaTag('name', 'twitter:image', `${SITE_URL}/BabanSoft_L.png`);
+    upsertCanonicalLink(canonicalUrl);
+  }, [activeView]);
+
+  useEffect(() => {
     setAuthError('');
   }, [authMode]);
 
@@ -455,7 +605,7 @@ export default function App() {
     }
 
     clearAuthRedirectState();
-    setActiveView('account');
+  navigateTo('account', { replaceHistory: true, scrollBehavior: 'auto' });
     setAuthMode('login');
     setAuthError('');
 
@@ -500,11 +650,23 @@ export default function App() {
     }
   }, []);
 
-  function navigateTo(viewId) {
+  function navigateTo(viewId, options = {}) {
+    const { replaceHistory = false, scrollBehavior = 'smooth' } = options;
+
     setActiveView(viewId);
 
     if (typeof window !== 'undefined') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      const nextPath = getPathForView(viewId);
+
+      if (normalizeAppPathname(window.location.pathname) !== nextPath) {
+        if (replaceHistory) {
+          window.history.replaceState({}, document.title, nextPath);
+        } else {
+          window.history.pushState({}, document.title, nextPath);
+        }
+      }
+
+      window.scrollTo({ top: 0, behavior: scrollBehavior });
     }
   }
 
@@ -626,7 +788,7 @@ export default function App() {
       });
       setAuthForm(createEmptyAuthForm());
       setAuthNotice(t(authMode === 'login' ? 'authLoginSuccess' : 'authRegisterSuccess'));
-      setActiveView('account');
+      navigateTo('account');
     } catch (requestError) {
       setAuthError(requestError.message);
     } finally {
@@ -721,7 +883,7 @@ export default function App() {
       setPasswordResetSession(null);
       setPasswordResetForm(createEmptyPasswordResetForm());
       setAuthNotice(result.message);
-      setActiveView('account');
+      navigateTo('account');
     } catch (requestError) {
       setAuthError(requestError.message);
     } finally {
@@ -831,7 +993,7 @@ export default function App() {
 
       setAuthSession(null);
       setAccount(null);
-      setActiveView('account');
+      navigateTo('account', { replaceHistory: true });
       setAuthMode('login');
       setAuthForm(createEmptyAuthForm());
       setPasswordResetSession(null);
@@ -889,7 +1051,6 @@ export default function App() {
 
     setAuthSession(null);
     setAccount(null);
-    setActiveView('home');
     setAuthMode('login');
     setAuthForm(createEmptyAuthForm());
     setAuthError('');
@@ -902,6 +1063,7 @@ export default function App() {
     setDeleteConfirmValue('');
     setFeedbackError('');
     setFeedbackNotice('');
+    navigateTo('home', { replaceHistory: true });
   }
 
   function renderAuthView() {

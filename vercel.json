@@ -47,6 +47,10 @@
     {
       "source": "/api/account/settings",
       "destination": "/api/account?route=settings"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/"
     }
   ]
 }
